@@ -2,19 +2,6 @@ namespace SpriteKind {
     export const Puyo = SpriteKind.create()
 }
 /**
- * fieldの数字
- * 
- * 0:空間
- * 
- * 1:赤
- * 
- * 2:青
- * 
- * 3:緑
- * 
- * 4:黄色
- */
-/**
  * OperatingPuyoDirection
  * 
  * 0:上
@@ -49,10 +36,23 @@ namespace SpriteKind {
 function Paint () {
 	
 }
-function MovePuyo () {
+function MovePuyo (direction: number) {
 	
 }
-function RotatePuyo () {
+/**
+ * fieldの数字
+ * 
+ * 0:空間
+ * 
+ * 1:赤
+ * 
+ * 2:青
+ * 
+ * 3:緑
+ * 
+ * 4:黄色
+ */
+function RotatePuyo (direction: number) {
 	
 }
 function Initialize () {
@@ -82,12 +82,31 @@ let nextPuyo: number[] = []
 let operatingPuyo: number[] = []
 let field: number[] = []
 let operatingPuyoDirection = 0
-let score = 0
 let state = 0
+let score = 0
 let FIELD_HEIGHT = 0
 let FIELD_WIDTH = 0
 FIELD_WIDTH = 6
 FIELD_HEIGHT = 13
-forever(function () {
-	
+game.onUpdateInterval(100, function () {
+    if (state == 1) {
+        if (controller.A.isPressed()) {
+        	
+        }
+        if (controller.B.isPressed()) {
+        	
+        }
+        if (controller.up.isPressed()) {
+        	
+        }
+        if (controller.right.isPressed()) {
+        	
+        }
+        if (controller.down.isPressed()) {
+        	
+        }
+        if (controller.left.isPressed()) {
+        	
+        }
+    }
 })
