@@ -1,8 +1,26 @@
 namespace SpriteKind {
     export const Puyo = SpriteKind.create()
 }
+function SetPuyoColor (puyo: Sprite, color: number) {
+    if (color == 1) {
+        puyo.setImage(assets.image`Puyo_Red`)
+    }
+    if (color == 2) {
+        puyo.setImage(assets.image`Puyo_Blue`)
+    }
+    if (color == 3) {
+        puyo.setImage(assets.image`Puyo_Green`)
+    }
+    if (color == 4) {
+        puyo.setImage(assets.image`Puyo_Yellow`)
+    }
+}
 function Paint () {
+    for (let 値 of sprites.allOfKind(SpriteKind.Puyo)) {
+        値.destroy()
+    }
     for (let カウンター = 0; カウンター <= FIELD_WIDTH * FIELD_HEIGHT - 1; カウンター++) {
+        image.screenImage().drawRect(FIELD_POS_X, FIELD_POS_Y, FIELD_WIDTH * FIELD_CELLSIZE, FIELD_HEIGHT * FIELD_CELLSIZE, 15)
         mySprite = sprites.create(img`
             . . . . . . . . . . . . . . . . 
             . . . . . . . . . . . . . . . . 
@@ -22,18 +40,7 @@ function Paint () {
             . . . . . . . . . . . . . . . . 
             `, SpriteKind.Player)
         mySprite.setKind(SpriteKind.Puyo)
-        if (field[カウンター] == 1) {
-            mySprite.setImage(assets.image`Puyo_Red`)
-        }
-        if (field[カウンター] == 2) {
-            mySprite.setImage(assets.image`Puyo_Blue`)
-        }
-        if (field[カウンター] == 3) {
-            mySprite.setImage(assets.image`Puyo_Green`)
-        }
-        if (field[カウンター] == 4) {
-            mySprite.setImage(assets.image`Puyo_Yellow`)
-        }
+        SetPuyoColor(mySprite, field[カウンター])
         mySprite.setPosition(FIELD_POS_X + Math.round(カウンター / FIELD_WIDTH) * FIELD_CELLSIZE, FIELD_POS_Y + カウンター % FIELD_HEIGHT * FIELD_CELLSIZE)
     }
 }
@@ -87,7 +94,7 @@ function Initialize () {
     for (let カウンター4 = 0; カウンター4 <= 1; カウンター4++) {
         next2Puyo[カウンター4] = randint(1, 4)
     }
-    scene.setBackgroundColor(0)
+    scene.setBackgroundColor(1)
 }
 let next2Puyo: number[] = []
 let nextPuyo: number[] = []
