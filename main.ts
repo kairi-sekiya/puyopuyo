@@ -14,6 +14,17 @@ namespace SpriteKind {
  * 
  * 4:黄色
  */
+/**
+ * OperatingPuyoDirection
+ * 
+ * 0:上
+ * 
+ * 1:右
+ * 
+ * 2:下
+ * 
+ * 3:左
+ */
 // Stateの中の数字
 // 
 // 0:待機中(その他)
@@ -35,41 +46,19 @@ namespace SpriteKind {
 // 4.落下中(連鎖)
 // 
 // Falling
-function UpdateOperating () {
-	
-}
-function Update () {
-    if (state == 0) {
-        UpdateWaiting()
-    }
-    if (state == 1) {
-        UpdateOperating()
-    }
-    if (state == 2) {
-        UpdatePlacing()
-    }
-    if (state == 3) {
-        UpdateDeleting()
-    }
-    if (state == 4) {
-        UpdateFalling()
-    }
-}
-function UpdateWaiting () {
-	
-}
-function UpdatePlacing () {
-	
-}
 function Paint () {
 	
 }
-function UpdateFalling () {
+function MovePuyo () {
+	
+}
+function RotatePuyo () {
 	
 }
 function Initialize () {
     score = 0
     state = 0
+    operatingPuyoDirection = 0
     field = [FIELD_WIDTH, FIELD_HEIGHT]
     for (let カウンター = 0; カウンター <= FIELD_WIDTH * FIELD_HEIGHT - 1; カウンター++) {
         field[カウンター] = 0
@@ -88,13 +77,11 @@ function Initialize () {
     }
     scene.setBackgroundColor(0)
 }
-function UpdateDeleting () {
-	
-}
 let next2Puyo: number[] = []
 let nextPuyo: number[] = []
 let operatingPuyo: number[] = []
 let field: number[] = []
+let operatingPuyoDirection = 0
 let score = 0
 let state = 0
 let FIELD_HEIGHT = 0
