@@ -135,7 +135,7 @@ function Paint () {
             operatingPuyo2PosX = -1
             operatingPuyo2PosY = 0
         }
-        operatingPuyoSprite2.setPosition(FIELD_POS_X + (operatingPuyoPosX + operatingPuyo2PosX) * FIELD_CELLSIZE + FIELD_CELLSIZE / 2 + operatingPuyo2PosX, FIELD_POS_Y + (operatingPuyoPosY + operatingPuyo2PosY - 1) * FIELD_CELLSIZE + FIELD_CELLSIZE / 2 + operatingPuyo2PosY)
+        operatingPuyoSprite2.setPosition(FIELD_POS_X + (operatingPuyoPosX + operatingPuyo2PosX) * FIELD_CELLSIZE + FIELD_CELLSIZE / 2, FIELD_POS_Y + (operatingPuyoPosY + operatingPuyo2PosY - 1) * FIELD_CELLSIZE + FIELD_CELLSIZE / 2)
     }
 }
 // 0:上
@@ -168,14 +168,106 @@ function GetOperatingPuyoRight () {
 // 1:右
 function RotatePuyo (direction: number) {
     if (direction == 0) {
-        operatingPuyoDirection += -1
-        if (operatingPuyoDirection < 0) {
-            operatingPuyoDirection = operatingPuyoDirection % 4 + 4
+        if (LEFT_ROTATE_INTERVAL < leftRotateIntervalTimer) {
+            if (operatingPuyoDirection == 0) {
+                if (field[PosToFieldIndex(GetOperatingPuyoLeft(), GetOperatingPuyoBottom()) - 1] == 0 && 0 <= operatingPuyoPosX - 1) {
+                    operatingPuyoDirection += -1
+                } else {
+                    if (field[PosToFieldIndex(GetOperatingPuyoLeft(), GetOperatingPuyoBottom()) + 1] == 0 && operatingPuyoPosX + 1 < FIELD_WIDTH) {
+                        operatingPuyoPosX += 1
+                        operatingPuyoDirection += -1
+                    } else {
+                        if (isRotatingLeftMiddle == true) {
+                            if (!(field[PosToFieldIndex(GetOperatingPuyoLeft(), GetOperatingPuyoBottom()) + FIELD_WIDTH] == 0) && operatingPuyoPosY + 1 < FIELD_HEIGHT) {
+                                operatingPuyoPosY += 1
+                            }
+                            operatingPuyoDirection += 2
+                            isRotatingLeftMiddle = false
+                        } else {
+                            isRotatingLeftMiddle = true
+                        }
+                    }
+                }
+            } else if (operatingPuyoDirection == 1) {
+                operatingPuyoDirection += -1
+            } else if (operatingPuyoDirection == 2) {
+                if (field[PosToFieldIndex(GetOperatingPuyoLeft(), GetOperatingPuyoTop()) + 1] == 0 && operatingPuyoPosX + 1 < FIELD_WIDTH) {
+                    operatingPuyoDirection += -1
+                } else {
+                    if (field[PosToFieldIndex(GetOperatingPuyoRight(), GetOperatingPuyoTop()) - 1] == 0 && 0 <= operatingPuyoPosX - 1) {
+                        operatingPuyoPosX += -1
+                        operatingPuyoDirection += -1
+                    } else {
+                        if (isRotatingLeftMiddle == true) {
+                            operatingPuyoDirection += -2
+                            isRotatingLeftMiddle = false
+                        }
+                        isRotatingLeftMiddle = true
+                    }
+                }
+            } else {
+                if (field[PosToFieldIndex(GetOperatingPuyoRight(), GetOperatingPuyoBottom()) + FIELD_WIDTH] == 0 && operatingPuyoPosY + 1 < FIELD_HEIGHT) {
+                    operatingPuyoDirection += -1
+                } else {
+                    operatingPuyoPosY += -1
+                    operatingPuyoDirection += 1
+                }
+            }
+            if (operatingPuyoDirection < 0) {
+                operatingPuyoDirection = (operatingPuyoDirection % 4 + 4) % 4
+            }
+            leftRotateIntervalTimer = 0
         }
     } else {
-        operatingPuyoDirection += 1
-        if (operatingPuyoDirection > 3) {
-            operatingPuyoDirection = operatingPuyoDirection % 4
+        if (RIGHT_ROTATE_INTERVAL < RightRotateIntervalTimer) {
+            if (operatingPuyoDirection == 0) {
+                if (field[PosToFieldIndex(GetOperatingPuyoLeft(), GetOperatingPuyoBottom()) + 1] == 0 && operatingPuyoPosX + 1 < FIELD_WIDTH) {
+                    operatingPuyoDirection += 1
+                } else {
+                    if (field[PosToFieldIndex(GetOperatingPuyoLeft(), GetOperatingPuyoBottom()) - 1] == 0 && 0 <= operatingPuyoPosX - 1) {
+                        operatingPuyoPosX += -1
+                        operatingPuyoDirection += 1
+                    } else {
+                        if (isRotatingRightMiddle == true) {
+                            if (!(field[PosToFieldIndex(GetOperatingPuyoLeft(), GetOperatingPuyoBottom()) + FIELD_WIDTH] == 0) && operatingPuyoPosY + 1 < FIELD_HEIGHT) {
+                                operatingPuyoPosY += 1
+                            }
+                            operatingPuyoDirection += 2
+                            isRotatingRightMiddle = false
+                        } else {
+                            isRotatingRightMiddle = true
+                        }
+                    }
+                }
+            } else if (operatingPuyoDirection == 1) {
+                if (field[PosToFieldIndex(GetOperatingPuyoLeft(), GetOperatingPuyoBottom()) + FIELD_WIDTH] == 0 && operatingPuyoPosY + 1 < FIELD_HEIGHT) {
+                    operatingPuyoDirection += 1
+                } else {
+                    operatingPuyoPosY += -1
+                    operatingPuyoDirection += 1
+                }
+            } else if (operatingPuyoDirection == 2) {
+                if (field[PosToFieldIndex(GetOperatingPuyoLeft(), GetOperatingPuyoTop()) - 1] == 0 && 0 <= operatingPuyoPosX - 1) {
+                    operatingPuyoDirection += 1
+                } else {
+                    if (field[PosToFieldIndex(GetOperatingPuyoRight(), GetOperatingPuyoTop()) + 1] == 0 && operatingPuyoPosX + 1 < FIELD_WIDTH) {
+                        operatingPuyoPosX += 1
+                        operatingPuyoDirection += 1
+                    } else {
+                        if (isRotatingRightMiddle == true) {
+                            operatingPuyoDirection += 2
+                            isRotatingRightMiddle = false
+                        }
+                        isRotatingRightMiddle = true
+                    }
+                }
+            } else {
+                operatingPuyoDirection += 1
+            }
+            if (operatingPuyoDirection > 3) {
+                operatingPuyoDirection = operatingPuyoDirection % 4
+            }
+            RightRotateIntervalTimer = 0
         }
     }
 }
@@ -253,6 +345,10 @@ let next2Puyo: number[] = []
 let nextPuyo: number[] = []
 let state = 0
 let score = 0
+let isRotatingRightMiddle = false
+let RightRotateIntervalTimer = 0
+let isRotatingLeftMiddle = false
+let leftRotateIntervalTimer = 0
 let operatingPuyoFallTimer = 0
 let operatingPuyo2PosY = 0
 let operatingPuyo2PosX = 0
@@ -266,6 +362,8 @@ let FIELD_POS_Y = 0
 let FIELD_POS_X = 0
 let operatingPuyoPosY = 0
 let operatingPuyoPosX = 0
+let RIGHT_ROTATE_INTERVAL = 0
+let LEFT_ROTATE_INTERVAL = 0
 let FIELD_CELLSIZE = 0
 let FIELD_HEIGHT = 0
 let FIELD_WIDTH = 0
@@ -273,7 +371,9 @@ FIELD_WIDTH = 6
 FIELD_HEIGHT = 13
 FIELD_CELLSIZE = 6
 let OPERATING_PUYO_FALL_TIME = 2000
-let FPS = 30
+let FPS = 60
+LEFT_ROTATE_INTERVAL = 50
+RIGHT_ROTATE_INTERVAL = 50
 operatingPuyoPosX = 0
 operatingPuyoPosY = 0
 FIELD_POS_X = 80 - FIELD_WIDTH * FIELD_CELLSIZE / 2
@@ -284,10 +384,10 @@ Paint()
 game.onUpdateInterval(1000 / FPS, function () {
     if (state == 1) {
         if (controller.A.isPressed()) {
-            RotatePuyo(0)
+            RotatePuyo(1)
         }
         if (controller.B.isPressed()) {
-            RotatePuyo(1)
+            RotatePuyo(0)
         }
         if (controller.right.isPressed()) {
             MovePuyo(1)
@@ -305,5 +405,7 @@ game.onUpdateInterval(1000 / FPS, function () {
         }
     }
     operatingPuyoFallTimer += 1000 / FPS
+    leftRotateIntervalTimer += 1000 / FPS
+    RightRotateIntervalTimer += 1000 / FPS
     Paint()
 })
