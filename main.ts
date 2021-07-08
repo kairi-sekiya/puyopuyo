@@ -1,5 +1,6 @@
 namespace SpriteKind {
     export const Puyo = SpriteKind.create()
+    export const UI = SpriteKind.create()
 }
 function SetPuyoColor (puyo: Sprite, color: number) {
     if (color == 1) {
@@ -20,7 +21,9 @@ function Paint () {
         値.destroy()
     }
     for (let カウンター = 0; カウンター <= FIELD_WIDTH * FIELD_HEIGHT - 1; カウンター++) {
-        image.screenImage().drawRect(FIELD_POS_X, FIELD_POS_Y, FIELD_WIDTH * FIELD_CELLSIZE, FIELD_HEIGHT * FIELD_CELLSIZE, 15)
+        if (カウンター < 6) {
+            カウンター = 6
+        }
         mySprite = sprites.create(img`
             . . . . . . . . . . . . . . . . 
             . . . . . . . . . . . . . . . . 
@@ -41,7 +44,7 @@ function Paint () {
             `, SpriteKind.Player)
         mySprite.setKind(SpriteKind.Puyo)
         SetPuyoColor(mySprite, field[カウンター])
-        mySprite.setPosition(FIELD_POS_X + Math.round(カウンター / FIELD_WIDTH) * FIELD_CELLSIZE, FIELD_POS_Y + カウンター % FIELD_HEIGHT * FIELD_CELLSIZE)
+        mySprite.setPosition(FIELD_POS_X + カウンター % FIELD_WIDTH * FIELD_CELLSIZE + FIELD_CELLSIZE / 2, FIELD_POS_Y + Math.round(カウンター / FIELD_HEIGHT) * FIELD_CELLSIZE + FIELD_CELLSIZE / 2)
     }
 }
 // 0:上
@@ -94,8 +97,14 @@ function Initialize () {
     for (let カウンター4 = 0; カウンター4 <= 1; カウンター4++) {
         next2Puyo[カウンター4] = randint(1, 4)
     }
-    scene.setBackgroundColor(1)
+    scene.setBackgroundColor(3)
+    fieldFrameImage = image.create(FIELD_WIDTH * FIELD_CELLSIZE + 2, FIELD_HEIGHT * FIELD_CELLSIZE + 2)
+    fieldFrameImage.drawRect(0, 0, FIELD_WIDTH * FIELD_CELLSIZE + 2, FIELD_HEIGHT * FIELD_CELLSIZE + 2, 15)
+    fieldFrameSprite = sprites.create(fieldFrameImage, SpriteKind.UI)
+    fieldFrameSprite.setPosition(FIELD_POS_X + FIELD_WIDTH * FIELD_CELLSIZE / 2, FIELD_POS_Y + (FIELD_HEIGHT * FIELD_CELLSIZE - 1) / 2)
 }
+let fieldFrameSprite: Sprite = null
+let fieldFrameImage: Image = null
 let next2Puyo: number[] = []
 let nextPuyo: number[] = []
 let operatingPuyo: number[] = []
@@ -106,21 +115,21 @@ let operatingPuyoPosY = 0
 let operatingPuyoPosX = 0
 let mySprite: Sprite = null
 let field: number[] = []
+let FIELD_POS_Y = 0
+let FIELD_POS_X = 0
 let FIELD_CELLSIZE = 0
 let FIELD_HEIGHT = 0
 let FIELD_WIDTH = 0
-let FIELD_POS_Y = 0
-let FIELD_POS_X = 0
-FIELD_POS_X = 10
-FIELD_POS_Y = 10
 FIELD_WIDTH = 6
 FIELD_HEIGHT = 13
 FIELD_CELLSIZE = 6
+FIELD_POS_X = 80 - FIELD_WIDTH * FIELD_CELLSIZE / 2
+FIELD_POS_Y = 60 - FIELD_HEIGHT * FIELD_CELLSIZE / 2
 Initialize()
-field[0] = 2
-field[1] = 3
-field[2] = 1
-field[3] = 4
+field[7] = 2
+field[8] = 3
+field[9] = 1
+field[6] = 4
 Paint()
 game.onUpdateInterval(100, function () {
     if (state == 1) {
