@@ -2,6 +2,16 @@ namespace SpriteKind {
     export const Puyo = SpriteKind.create()
     export const UI = SpriteKind.create()
 }
+function GetOperatingPuyoTop () {
+    if (operatingPuyoDirection == 0) {
+        return operatingPuyoPosY - 1
+    } else {
+        return operatingPuyoPosY
+    }
+}
+function PosToFieldIndex (PosX: number, PosY: number) {
+    return PosX + PosY * FIELD_WIDTH
+}
 function SetPuyoColor (puyo: Sprite, color: number) {
     if (color == 1) {
         puyo.setImage(assets.image`Puyo_Red`)
@@ -14,6 +24,13 @@ function SetPuyoColor (puyo: Sprite, color: number) {
     }
     if (color == 4) {
         puyo.setImage(assets.image`Puyo_Yellow`)
+    }
+}
+function GetOperatingPuyoLeft () {
+    if (operatingPuyoDirection == 3) {
+        return operatingPuyoPosX - 1
+    } else {
+        return operatingPuyoPosX
     }
 }
 function Paint () {
@@ -41,10 +58,84 @@ function Paint () {
             . . . . . . . . . . . . . . . . 
             . . . . . . . . . . . . . . . . 
             . . . . . . . . . . . . . . . . 
-            `, SpriteKind.Player)
+            `, SpriteKind.Puyo)
         mySprite.setKind(SpriteKind.Puyo)
         SetPuyoColor(mySprite, field[カウンター])
-        mySprite.setPosition(FIELD_POS_X + カウンター % FIELD_WIDTH * FIELD_CELLSIZE + FIELD_CELLSIZE / 2, FIELD_POS_Y + Math.round(カウンター / FIELD_HEIGHT) * FIELD_CELLSIZE + FIELD_CELLSIZE / 2)
+        mySprite.setPosition(FIELD_POS_X + カウンター % FIELD_WIDTH * FIELD_CELLSIZE + FIELD_CELLSIZE / 2, FIELD_POS_Y + (Math.floor(カウンター / FIELD_WIDTH) - 1) * FIELD_CELLSIZE + FIELD_CELLSIZE / 2)
+    }
+    operatingPuyoSprite1 = sprites.create(img`
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        `, SpriteKind.Puyo)
+    SetPuyoColor(operatingPuyoSprite1, operatingPuyo[0])
+    operatingPuyoSprite1.setPosition(FIELD_POS_X + operatingPuyoPosX * FIELD_CELLSIZE + FIELD_CELLSIZE / 2, FIELD_POS_Y + (operatingPuyoPosY - 1) * FIELD_CELLSIZE + FIELD_CELLSIZE / 2)
+    operatingPuyoSprite2 = sprites.create(img`
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        `, SpriteKind.Puyo)
+    if (operatingPuyoPosY == 1 && operatingPuyoDirection == 0) {
+        operatingPuyoSprite2.setImage(img`
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            `)
+    } else {
+        SetPuyoColor(operatingPuyoSprite2, operatingPuyo[1])
+        if (operatingPuyoDirection == 0) {
+            operatingPuyo2PosX = 0
+            operatingPuyo2PosY = -1
+        } else if (operatingPuyoDirection == 1) {
+            operatingPuyo2PosX = 1
+            operatingPuyo2PosY = 0
+        } else if (operatingPuyoDirection == 2) {
+            operatingPuyo2PosX = 0
+            operatingPuyo2PosY = 1
+        } else {
+            operatingPuyo2PosX = -1
+            operatingPuyo2PosY = 0
+        }
+        operatingPuyoSprite2.setPosition(FIELD_POS_X + (operatingPuyoPosX + operatingPuyo2PosX) * FIELD_CELLSIZE + FIELD_CELLSIZE / 2 + operatingPuyo2PosX, FIELD_POS_Y + (operatingPuyoPosY + operatingPuyo2PosY - 1) * FIELD_CELLSIZE + FIELD_CELLSIZE / 2 + operatingPuyo2PosY)
     }
 }
 // 0:上
@@ -52,14 +143,25 @@ function Paint () {
 // 2:下
 // 3:左
 function MovePuyo (direction: number) {
+    if (!(MoveCheck(direction))) {
+        return
+    }
     if (direction == 1) {
         operatingPuyoPosX += 1
     }
     if (direction == 2) {
-        operatingPuyoPosY += -1
+        operatingPuyoPosY += 1
+        operatingPuyoFallTimer = 0
     }
     if (direction == 3) {
         operatingPuyoPosX += -1
+    }
+}
+function GetOperatingPuyoRight () {
+    if (operatingPuyoDirection == 1) {
+        return operatingPuyoPosX + 1
+    } else {
+        return operatingPuyoPosX
     }
 }
 // 0:左
@@ -68,18 +170,44 @@ function RotatePuyo (direction: number) {
     if (direction == 0) {
         operatingPuyoDirection += -1
         if (operatingPuyoDirection < 0) {
-            operatingPuyoDirection += 4
+            operatingPuyoDirection = operatingPuyoDirection % 4 + 4
         }
     } else {
         operatingPuyoDirection += 1
         if (operatingPuyoDirection > 3) {
-            operatingPuyoDirection += -4
+            operatingPuyoDirection = operatingPuyoDirection % 4
         }
+    }
+}
+function MoveCheck (direction: number) {
+    if (direction == 1) {
+        if (GetOperatingPuyoRight() + 1 < FIELD_WIDTH && field[PosToFieldIndex(GetOperatingPuyoRight(), GetOperatingPuyoBottom()) + 1] == 0) {
+            return true
+        }
+    }
+    if (direction == 2) {
+        if (GetOperatingPuyoBottom() + 1 < FIELD_HEIGHT && field[PosToFieldIndex(GetOperatingPuyoLeft(), GetOperatingPuyoBottom()) + FIELD_WIDTH] == 0 && field[PosToFieldIndex(GetOperatingPuyoRight(), GetOperatingPuyoBottom()) + FIELD_WIDTH] == 0) {
+            return true
+        }
+    }
+    if (direction == 3) {
+        if (-1 < GetOperatingPuyoLeft() - 1 && field[PosToFieldIndex(GetOperatingPuyoLeft(), GetOperatingPuyoBottom()) - 1] == 0) {
+            return true
+        }
+    }
+    return false
+}
+function GetOperatingPuyoBottom () {
+    if (operatingPuyoDirection == 2) {
+        return operatingPuyoPosY + 1
+    } else {
+        return operatingPuyoPosY
     }
 }
 function Initialize () {
     score = 0
     state = 0
+    operatingPuyoFallTimer = 0
     operatingPuyoDirection = 0
     field = [FIELD_WIDTH, FIELD_HEIGHT]
     for (let カウンター2 = 0; カウンター2 <= FIELD_WIDTH * FIELD_HEIGHT - 1; カウンター2++) {
@@ -87,7 +215,7 @@ function Initialize () {
     }
     operatingPuyo = [2]
     for (let カウンター22 = 0; カウンター22 <= 1; カウンター22++) {
-        operatingPuyo[カウンター22] = randint(1, 4)
+        operatingPuyo[カウンター22] = 0
     }
     nextPuyo = [2]
     for (let カウンター3 = 0; カウンター3 <= 1; カウンター3++) {
@@ -98,40 +226,62 @@ function Initialize () {
         next2Puyo[カウンター4] = randint(1, 4)
     }
     scene.setBackgroundColor(3)
-    fieldFrameImage = image.create(FIELD_WIDTH * FIELD_CELLSIZE + 2, FIELD_HEIGHT * FIELD_CELLSIZE + 2)
-    fieldFrameImage.drawRect(0, 0, FIELD_WIDTH * FIELD_CELLSIZE + 2, FIELD_HEIGHT * FIELD_CELLSIZE + 2, 15)
+    fieldFrameImage = image.create(FIELD_WIDTH * FIELD_CELLSIZE + 2, (FIELD_HEIGHT - 1) * FIELD_CELLSIZE + 2)
+    fieldFrameImage.drawRect(0, 0, FIELD_WIDTH * FIELD_CELLSIZE + 2, (FIELD_HEIGHT - 1) * FIELD_CELLSIZE + 2, 15)
     fieldFrameSprite = sprites.create(fieldFrameImage, SpriteKind.UI)
-    fieldFrameSprite.setPosition(FIELD_POS_X + FIELD_WIDTH * FIELD_CELLSIZE / 2, FIELD_POS_Y + (FIELD_HEIGHT * FIELD_CELLSIZE - 1) / 2)
+    fieldFrameSprite.setPosition(FIELD_POS_X + FIELD_WIDTH * FIELD_CELLSIZE / 2, FIELD_POS_Y + (FIELD_HEIGHT - 1) * FIELD_CELLSIZE / 2)
+}
+function PushNextPuyo () {
+    for (let カウンター = 0; カウンター <= 1; カウンター++) {
+        operatingPuyo[カウンター] = nextPuyo[カウンター]
+    }
+    for (let カウンター = 0; カウンター <= 1; カウンター++) {
+        nextPuyo[カウンター] = next2Puyo[カウンター]
+    }
+    for (let カウンター = 0; カウンター <= 1; カウンター++) {
+        next2Puyo[カウンター] = randint(1, 4)
+    }
+    operatingPuyoPosX = 2
+    operatingPuyoPosY = 1
+    operatingPuyoFallTimer = 0
+    operatingPuyoDirection = 0
+    state = 1
 }
 let fieldFrameSprite: Sprite = null
 let fieldFrameImage: Image = null
 let next2Puyo: number[] = []
 let nextPuyo: number[] = []
-let operatingPuyo: number[] = []
 let state = 0
 let score = 0
-let operatingPuyoDirection = 0
-let operatingPuyoPosY = 0
-let operatingPuyoPosX = 0
-let mySprite: Sprite = null
+let operatingPuyoFallTimer = 0
+let operatingPuyo2PosY = 0
+let operatingPuyo2PosX = 0
+let operatingPuyoSprite2: Sprite = null
+let operatingPuyo: number[] = []
+let operatingPuyoSprite1: Sprite = null
 let field: number[] = []
+let mySprite: Sprite = null
+let operatingPuyoDirection = 0
 let FIELD_POS_Y = 0
 let FIELD_POS_X = 0
+let operatingPuyoPosY = 0
+let operatingPuyoPosX = 0
 let FIELD_CELLSIZE = 0
 let FIELD_HEIGHT = 0
 let FIELD_WIDTH = 0
 FIELD_WIDTH = 6
 FIELD_HEIGHT = 13
 FIELD_CELLSIZE = 6
+let OPERATING_PUYO_FALL_TIME = 2000
+let FPS = 30
+operatingPuyoPosX = 0
+operatingPuyoPosY = 0
 FIELD_POS_X = 80 - FIELD_WIDTH * FIELD_CELLSIZE / 2
 FIELD_POS_Y = 60 - FIELD_HEIGHT * FIELD_CELLSIZE / 2
 Initialize()
-field[7] = 2
-field[8] = 3
-field[9] = 1
-field[6] = 4
+PushNextPuyo()
 Paint()
-game.onUpdateInterval(100, function () {
+game.onUpdateInterval(1000 / FPS, function () {
     if (state == 1) {
         if (controller.A.isPressed()) {
             RotatePuyo(0)
@@ -139,17 +289,21 @@ game.onUpdateInterval(100, function () {
         if (controller.B.isPressed()) {
             RotatePuyo(1)
         }
-        if (controller.up.isPressed()) {
-            MovePuyo(0)
-        }
         if (controller.right.isPressed()) {
             MovePuyo(1)
-        }
-        if (controller.down.isPressed()) {
-            MovePuyo(2)
         }
         if (controller.left.isPressed()) {
             MovePuyo(3)
         }
+        if (!(controller.right.isPressed() || controller.left.isPressed())) {
+            if (controller.down.isPressed()) {
+                MovePuyo(2)
+            }
+            if (operatingPuyoFallTimer > OPERATING_PUYO_FALL_TIME) {
+                MovePuyo(2)
+            }
+        }
     }
+    operatingPuyoFallTimer += 1000 / FPS
+    Paint()
 })
