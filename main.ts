@@ -210,7 +210,7 @@ function RotatePuyo (direction: number) {
                     operatingPuyoDirection += -1
                 } else {
                     operatingPuyoPosY += -1
-                    operatingPuyoDirection += 1
+                    operatingPuyoDirection += -1
                 }
             }
             if (operatingPuyoDirection < 0) {
