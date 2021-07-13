@@ -122,19 +122,6 @@ function Paint () {
             `)
     } else {
         SetPuyoColor(operatingPuyoSprite2, operatingPuyo[1])
-        if (operatingPuyoDirection == 0) {
-            operatingPuyo2PosX = 0
-            operatingPuyo2PosY = -1
-        } else if (operatingPuyoDirection == 1) {
-            operatingPuyo2PosX = 1
-            operatingPuyo2PosY = 0
-        } else if (operatingPuyoDirection == 2) {
-            operatingPuyo2PosX = 0
-            operatingPuyo2PosY = 1
-        } else {
-            operatingPuyo2PosX = -1
-            operatingPuyo2PosY = 0
-        }
         operatingPuyoSprite2.setPosition(FIELD_POS_X + (operatingPuyoPosX + operatingPuyo2PosX) * FIELD_CELLSIZE + FIELD_CELLSIZE / 2, FIELD_POS_Y + (operatingPuyoPosY + operatingPuyo2PosY - 1) * FIELD_CELLSIZE + FIELD_CELLSIZE / 2)
     }
 }
@@ -143,17 +130,33 @@ function Paint () {
 // 2:下
 // 3:左
 function MovePuyo (direction: number) {
-    if (!(MoveCheck(direction))) {
-        return
-    }
     if (direction == 1) {
+        if (!(MoveCheck(direction))) {
+            return
+        }
         operatingPuyoPosX += 1
     }
     if (direction == 2) {
-        operatingPuyoPosY += 1
-        operatingPuyoFallTimer = 0
+        if (MoveCheck(direction)) {
+            operatingPuyoPosY += 1
+            operatingPuyoFallTimer = 0
+        } else {
+            field[PosToFieldIndex(operatingPuyoPosX, operatingPuyoPosY)] = operatingPuyo[0]
+            field[PosToFieldIndex(operatingPuyoPosX + operatingPuyo2PosX, operatingPuyoPosY + operatingPuyo2PosY)] = operatingPuyo[1]
+            if (operatingPuyoDirection == 2) {
+                FallFieldPuyo(PosToFieldIndex(operatingPuyoPosX + operatingPuyo2PosX, operatingPuyoPosY + operatingPuyo2PosY))
+                FallFieldPuyo(PosToFieldIndex(operatingPuyoPosX, operatingPuyoPosY))
+            } else {
+                FallFieldPuyo(PosToFieldIndex(operatingPuyoPosX, operatingPuyoPosY))
+                FallFieldPuyo(PosToFieldIndex(operatingPuyoPosX + operatingPuyo2PosX, operatingPuyoPosY + operatingPuyo2PosY))
+            }
+            state = 2
+        }
     }
     if (direction == 3) {
+        if (!(MoveCheck(direction))) {
+            return
+        }
         operatingPuyoPosX += -1
     }
 }
@@ -270,6 +273,19 @@ function RotatePuyo (direction: number) {
             RightRotateIntervalTimer = 0
         }
     }
+    if (operatingPuyoDirection == 0) {
+        operatingPuyo2PosX = 0
+        operatingPuyo2PosY = -1
+    } else if (operatingPuyoDirection == 1) {
+        operatingPuyo2PosX = 1
+        operatingPuyo2PosY = 0
+    } else if (operatingPuyoDirection == 2) {
+        operatingPuyo2PosX = 0
+        operatingPuyo2PosY = 1
+    } else {
+        operatingPuyo2PosX = -1
+        operatingPuyo2PosY = 0
+    }
 }
 function MoveCheck (direction: number) {
     if (direction == 1) {
@@ -296,11 +312,23 @@ function GetOperatingPuyoBottom () {
         return operatingPuyoPosY
     }
 }
+function FallFieldPuyo (index: number) {
+    if (FallCheck(index)) {
+        field[index + FIELD_WIDTH] = field[index]
+        field[index] = 0
+        FallFieldPuyo(index + FIELD_WIDTH)
+    } else {
+    	
+    }
+    return
+}
 function Initialize () {
     score = 0
     state = 0
     operatingPuyoFallTimer = 0
     operatingPuyoDirection = 0
+    operatingPuyo2PosX = 0
+    operatingPuyo2PosY = -1
     field = [FIELD_WIDTH, FIELD_HEIGHT]
     for (let カウンター2 = 0; カウンター2 <= FIELD_WIDTH * FIELD_HEIGHT - 1; カウンター2++) {
         field[カウンター2] = 0
@@ -337,18 +365,27 @@ function PushNextPuyo () {
     operatingPuyoPosY = 1
     operatingPuyoFallTimer = 0
     operatingPuyoDirection = 0
+    operatingPuyo2PosX = 0
+    operatingPuyo2PosY = -1
     state = 1
+}
+function FallCheck (index: number) {
+    if (field[index + FIELD_WIDTH] == 0 || Math.floor(index / FIELD_WIDTH) + 1 > FIELD_HEIGHT) {
+        return true
+    } else {
+        return false
+    }
 }
 let fieldFrameSprite: Sprite = null
 let fieldFrameImage: Image = null
 let next2Puyo: number[] = []
 let nextPuyo: number[] = []
-let state = 0
 let score = 0
 let isRotatingRightMiddle = false
 let RightRotateIntervalTimer = 0
 let isRotatingLeftMiddle = false
 let leftRotateIntervalTimer = 0
+let state = 0
 let operatingPuyoFallTimer = 0
 let operatingPuyo2PosY = 0
 let operatingPuyo2PosX = 0
@@ -399,13 +436,17 @@ game.onUpdateInterval(1000 / FPS, function () {
             if (controller.down.isPressed()) {
                 MovePuyo(2)
             }
-            if (operatingPuyoFallTimer > OPERATING_PUYO_FALL_TIME) {
-                MovePuyo(2)
-            }
         }
+        if (operatingPuyoFallTimer > OPERATING_PUYO_FALL_TIME) {
+            MovePuyo(2)
+        }
+        operatingPuyoFallTimer += 1000 / FPS
+        leftRotateIntervalTimer += 1000 / FPS
+        RightRotateIntervalTimer += 1000 / FPS
+    } else if (state == 2) {
+        PushNextPuyo()
+    } else {
+    	
     }
-    operatingPuyoFallTimer += 1000 / FPS
-    leftRotateIntervalTimer += 1000 / FPS
-    RightRotateIntervalTimer += 1000 / FPS
     Paint()
 })
