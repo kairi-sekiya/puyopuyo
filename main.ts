@@ -37,7 +37,7 @@ function Paint () {
     for (let 値 of sprites.allOfKind(SpriteKind.Puyo)) {
         値.destroy()
     }
-    for (let カウンター = 0; カウンター <= FIELD_WIDTH * FIELD_HEIGHT - 2; カウンター++) {
+    for (let カウンター = 0; カウンター <= FIELD_WIDTH * FIELD_HEIGHT - 1; カウンター++) {
         if (カウンター < 12) {
             カウンター = 12
         }
@@ -165,16 +165,38 @@ function MovePuyo (direction: number) {
                 operatingPuyoFallTimer = 0
                 downMoveIntervalTimer = 0
             } else {
-                field[PosToFieldIndex(operatingPuyoPosX, operatingPuyoPosY)] = operatingPuyo[0]
-                field[PosToFieldIndex(operatingPuyoPosX + operatingPuyo2PosX, operatingPuyoPosY + operatingPuyo2PosY)] = operatingPuyo[1]
-                if (operatingPuyoDirection == 2) {
-                    FallFieldPuyo(PosToFieldIndex(operatingPuyoPosX + operatingPuyo2PosX, operatingPuyoPosY + operatingPuyo2PosY))
-                    FallFieldPuyo(PosToFieldIndex(operatingPuyoPosX, operatingPuyoPosY))
+                if (0 < operatingPuyoPosY || operatingPuyoPosY == 0 && !(operatingPuyoDirection == 0)) {
+                    field[PosToFieldIndex(operatingPuyoPosX, operatingPuyoPosY)] = operatingPuyo[0]
+                    field[PosToFieldIndex(operatingPuyoPosX + operatingPuyo2PosX, operatingPuyoPosY + operatingPuyo2PosY)] = operatingPuyo[1]
+                    if (operatingPuyoDirection == 2) {
+                        FallFieldPuyo(PosToFieldIndex(operatingPuyoPosX + operatingPuyo2PosX, operatingPuyoPosY + operatingPuyo2PosY))
+                        FallFieldPuyo(PosToFieldIndex(operatingPuyoPosX, operatingPuyoPosY))
+                    } else {
+                        FallFieldPuyo(PosToFieldIndex(operatingPuyoPosX, operatingPuyoPosY))
+                        FallFieldPuyo(PosToFieldIndex(operatingPuyoPosX + operatingPuyo2PosX, operatingPuyoPosY + operatingPuyo2PosY))
+                    }
+                    state = 2
                 } else {
-                    FallFieldPuyo(PosToFieldIndex(operatingPuyoPosX, operatingPuyoPosY))
-                    FallFieldPuyo(PosToFieldIndex(operatingPuyoPosX + operatingPuyo2PosX, operatingPuyoPosY + operatingPuyo2PosY))
+                    if (operatingPuyoDirection == 2) {
+                        if (1 == operatingPuyoPosY + operatingPuyo2PosY) {
+                            field[PosToFieldIndex(operatingPuyoPosX + operatingPuyo2PosX, operatingPuyoPosY + operatingPuyo2PosY)] = operatingPuyo[1]
+                        }
+                    } else if (operatingPuyoDirection == 0) {
+                        if (1 == operatingPuyoPosY) {
+                            field[PosToFieldIndex(operatingPuyoPosX, operatingPuyoPosY)] = operatingPuyo[0]
+                        }
+                        field[PosToFieldIndex(operatingPuyoPosX, operatingPuyoPosY)] = operatingPuyo[0]
+                        field[PosToFieldIndex(operatingPuyoPosX + operatingPuyo2PosX, operatingPuyoPosY + operatingPuyo2PosY)] = operatingPuyo[1]
+                    } else {
+                        field[PosToFieldIndex(operatingPuyoPosX, operatingPuyoPosY)] = operatingPuyo[0]
+                        FallFieldPuyo(PosToFieldIndex(operatingPuyoPosX, operatingPuyoPosY))
+                        field[PosToFieldIndex(operatingPuyoPosX + operatingPuyo2PosX, operatingPuyoPosY + operatingPuyo2PosY)] = operatingPuyo[1]
+                        FallFieldPuyo(PosToFieldIndex(operatingPuyoPosX + operatingPuyo2PosX, operatingPuyoPosY + operatingPuyo2PosY))
+                    }
+                    for (let カウンター = 0; カウンター <= FIELD_WIDTH - 1; カウンター++) {
+                        field[PosToFieldIndex(カウンター, 0)] = 0
+                    }
                 }
-                state = 2
             }
         }
     }
