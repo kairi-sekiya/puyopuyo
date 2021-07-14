@@ -37,9 +37,9 @@ function Paint () {
     for (let 値 of sprites.allOfKind(SpriteKind.Puyo)) {
         値.destroy()
     }
-    for (let カウンター = 0; カウンター <= FIELD_WIDTH * FIELD_HEIGHT - 1; カウンター++) {
-        if (カウンター < 6) {
-            カウンター = 6
+    for (let カウンター = 0; カウンター <= FIELD_WIDTH * FIELD_HEIGHT - 2; カウンター++) {
+        if (カウンター < 12) {
+            カウンター = 12
         }
         mySprite = sprites.create(img`
             . . . . . . . . . . . . . . . . 
@@ -61,7 +61,7 @@ function Paint () {
             `, SpriteKind.Puyo)
         mySprite.setKind(SpriteKind.Puyo)
         SetPuyoColor(mySprite, field[カウンター])
-        mySprite.setPosition(FIELD_POS_X + カウンター % FIELD_WIDTH * FIELD_CELLSIZE + FIELD_CELLSIZE / 2, FIELD_POS_Y + (Math.floor(カウンター / FIELD_WIDTH) - 1) * FIELD_CELLSIZE + FIELD_CELLSIZE / 2)
+        mySprite.setPosition(FIELD_POS_X + カウンター % FIELD_WIDTH * FIELD_CELLSIZE + FIELD_CELLSIZE / 2, FIELD_POS_Y + (Math.floor(カウンター / FIELD_WIDTH) - 2) * FIELD_CELLSIZE + FIELD_CELLSIZE / 2)
     }
     operatingPuyoSprite1 = sprites.create(img`
         . . . . . . . . . . . . . . . . 
@@ -82,7 +82,7 @@ function Paint () {
         . . . . . . . . . . . . . . . . 
         `, SpriteKind.Puyo)
     SetPuyoColor(operatingPuyoSprite1, operatingPuyo[0])
-    operatingPuyoSprite1.setPosition(FIELD_POS_X + operatingPuyoPosX * FIELD_CELLSIZE + FIELD_CELLSIZE / 2, FIELD_POS_Y + (operatingPuyoPosY - 1) * FIELD_CELLSIZE + FIELD_CELLSIZE / 2)
+    operatingPuyoSprite1.setPosition(FIELD_POS_X + operatingPuyoPosX * FIELD_CELLSIZE + FIELD_CELLSIZE / 2, FIELD_POS_Y + (operatingPuyoPosY - 2) * FIELD_CELLSIZE + FIELD_CELLSIZE / 2)
     operatingPuyoSprite2 = sprites.create(img`
         . . . . . . . . . . . . . . . . 
         . . . . . . . . . . . . . . . . 
@@ -101,7 +101,29 @@ function Paint () {
         . . . . . . . . . . . . . . . . 
         . . . . . . . . . . . . . . . . 
         `, SpriteKind.Puyo)
-    if (operatingPuyoPosY == 1 && operatingPuyoDirection == 0) {
+    SetPuyoColor(operatingPuyoSprite2, operatingPuyo[1])
+    operatingPuyoSprite2.setPosition(FIELD_POS_X + (operatingPuyoPosX + operatingPuyo2PosX) * FIELD_CELLSIZE + FIELD_CELLSIZE / 2, FIELD_POS_Y + (operatingPuyoPosY + operatingPuyo2PosY - 2) * FIELD_CELLSIZE + FIELD_CELLSIZE / 2)
+    if (operatingPuyoPosY <= 1) {
+        operatingPuyoSprite1.setImage(img`
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            `)
+    }
+    if (operatingPuyoPosY + operatingPuyo2PosY <= 1) {
         operatingPuyoSprite2.setImage(img`
             . . . . . . . . . . . . . . . . 
             . . . . . . . . . . . . . . . . 
@@ -120,9 +142,6 @@ function Paint () {
             . . . . . . . . . . . . . . . . 
             . . . . . . . . . . . . . . . . 
             `)
-    } else {
-        SetPuyoColor(operatingPuyoSprite2, operatingPuyo[1])
-        operatingPuyoSprite2.setPosition(FIELD_POS_X + (operatingPuyoPosX + operatingPuyo2PosX) * FIELD_CELLSIZE + FIELD_CELLSIZE / 2, FIELD_POS_Y + (operatingPuyoPosY + operatingPuyo2PosY - 1) * FIELD_CELLSIZE + FIELD_CELLSIZE / 2)
     }
 }
 // 0:上
@@ -131,33 +150,42 @@ function Paint () {
 // 3:左
 function MovePuyo (direction: number) {
     if (direction == 1) {
-        if (!(MoveCheck(direction))) {
-            return
+        if (RIGHT_MOVE_INTERVAL < rightMoveIntervalTimer) {
+            if (!(MoveCheck(direction))) {
+                return
+            }
+            operatingPuyoPosX += 1
+            rightMoveIntervalTimer = 0
         }
-        operatingPuyoPosX += 1
     }
     if (direction == 2) {
-        if (MoveCheck(direction)) {
-            operatingPuyoPosY += 1
-            operatingPuyoFallTimer = 0
-        } else {
-            field[PosToFieldIndex(operatingPuyoPosX, operatingPuyoPosY)] = operatingPuyo[0]
-            field[PosToFieldIndex(operatingPuyoPosX + operatingPuyo2PosX, operatingPuyoPosY + operatingPuyo2PosY)] = operatingPuyo[1]
-            if (operatingPuyoDirection == 2) {
-                FallFieldPuyo(PosToFieldIndex(operatingPuyoPosX + operatingPuyo2PosX, operatingPuyoPosY + operatingPuyo2PosY))
-                FallFieldPuyo(PosToFieldIndex(operatingPuyoPosX, operatingPuyoPosY))
+        if (DOWN_MOVE_INTERVAL < downMoveIntervalTimer) {
+            if (MoveCheck(direction)) {
+                operatingPuyoPosY += 1
+                operatingPuyoFallTimer = 0
+                downMoveIntervalTimer = 0
             } else {
-                FallFieldPuyo(PosToFieldIndex(operatingPuyoPosX, operatingPuyoPosY))
-                FallFieldPuyo(PosToFieldIndex(operatingPuyoPosX + operatingPuyo2PosX, operatingPuyoPosY + operatingPuyo2PosY))
+                field[PosToFieldIndex(operatingPuyoPosX, operatingPuyoPosY)] = operatingPuyo[0]
+                field[PosToFieldIndex(operatingPuyoPosX + operatingPuyo2PosX, operatingPuyoPosY + operatingPuyo2PosY)] = operatingPuyo[1]
+                if (operatingPuyoDirection == 2) {
+                    FallFieldPuyo(PosToFieldIndex(operatingPuyoPosX + operatingPuyo2PosX, operatingPuyoPosY + operatingPuyo2PosY))
+                    FallFieldPuyo(PosToFieldIndex(operatingPuyoPosX, operatingPuyoPosY))
+                } else {
+                    FallFieldPuyo(PosToFieldIndex(operatingPuyoPosX, operatingPuyoPosY))
+                    FallFieldPuyo(PosToFieldIndex(operatingPuyoPosX + operatingPuyo2PosX, operatingPuyoPosY + operatingPuyo2PosY))
+                }
+                state = 2
             }
-            state = 2
         }
     }
     if (direction == 3) {
-        if (!(MoveCheck(direction))) {
-            return
+        if (LEFT_MOVE_INTERVAL < leftMoveIntervalTimer) {
+            if (!(MoveCheck(direction))) {
+                return
+            }
+            operatingPuyoPosX += -1
+            leftMoveIntervalTimer = 0
         }
-        operatingPuyoPosX += -1
     }
 }
 function GetOperatingPuyoRight () {
@@ -222,7 +250,7 @@ function RotatePuyo (direction: number) {
             leftRotateIntervalTimer = 0
         }
     } else {
-        if (RIGHT_ROTATE_INTERVAL < RightRotateIntervalTimer) {
+        if (RIGHT_ROTATE_INTERVAL < rightRotateIntervalTimer) {
             if (operatingPuyoDirection == 0) {
                 if (field[PosToFieldIndex(GetOperatingPuyoLeft(), GetOperatingPuyoBottom()) + 1] == 0 && operatingPuyoPosX + 1 < FIELD_WIDTH) {
                     operatingPuyoDirection += 1
@@ -270,7 +298,7 @@ function RotatePuyo (direction: number) {
             if (operatingPuyoDirection > 3) {
                 operatingPuyoDirection = operatingPuyoDirection % 4
             }
-            RightRotateIntervalTimer = 0
+            rightRotateIntervalTimer = 0
         }
     }
     if (operatingPuyoDirection == 0) {
@@ -313,14 +341,17 @@ function GetOperatingPuyoBottom () {
     }
 }
 function FallFieldPuyo (index: number) {
-    if (FallCheck(index)) {
-        field[index + FIELD_WIDTH] = field[index]
-        field[index] = 0
-        FallFieldPuyo(index + FIELD_WIDTH)
+    if (0 <= index) {
+        if (FallCheck(index)) {
+            field[index + FIELD_WIDTH] = field[index]
+            field[index] = 0
+            FallFieldPuyo(index + FIELD_WIDTH)
+        } else {
+            return
+        }
     } else {
     	
     }
-    return
 }
 function Initialize () {
     score = 0
@@ -346,10 +377,10 @@ function Initialize () {
         next2Puyo[カウンター4] = randint(1, 4)
     }
     scene.setBackgroundColor(3)
-    fieldFrameImage = image.create(FIELD_WIDTH * FIELD_CELLSIZE + 2, (FIELD_HEIGHT - 1) * FIELD_CELLSIZE + 2)
-    fieldFrameImage.drawRect(0, 0, FIELD_WIDTH * FIELD_CELLSIZE + 2, (FIELD_HEIGHT - 1) * FIELD_CELLSIZE + 2, 15)
+    fieldFrameImage = image.create(FIELD_WIDTH * FIELD_CELLSIZE + 2, (FIELD_HEIGHT - 2) * FIELD_CELLSIZE + 2)
+    fieldFrameImage.drawRect(0, 0, FIELD_WIDTH * FIELD_CELLSIZE + 2, (FIELD_HEIGHT - 2) * FIELD_CELLSIZE + 2, 15)
     fieldFrameSprite = sprites.create(fieldFrameImage, SpriteKind.UI)
-    fieldFrameSprite.setPosition(FIELD_POS_X + FIELD_WIDTH * FIELD_CELLSIZE / 2, FIELD_POS_Y + (FIELD_HEIGHT - 1) * FIELD_CELLSIZE / 2)
+    fieldFrameSprite.setPosition(FIELD_POS_X + FIELD_WIDTH * FIELD_CELLSIZE / 2, FIELD_POS_Y + (FIELD_HEIGHT - 2) * FIELD_CELLSIZE / 2)
 }
 function PushNextPuyo () {
     for (let カウンター = 0; カウンター <= 1; カウンター++) {
@@ -362,7 +393,12 @@ function PushNextPuyo () {
         next2Puyo[カウンター] = randint(1, 4)
     }
     operatingPuyoPosX = 2
-    operatingPuyoPosY = 1
+    operatingPuyoPosY = 2
+    leftRotateIntervalTimer = 0
+    rightRotateIntervalTimer = 0
+    leftMoveIntervalTimer = 0
+    rightMoveIntervalTimer = 0
+    downMoveIntervalTimer = 0
     operatingPuyoFallTimer = 0
     operatingPuyoDirection = 0
     operatingPuyo2PosX = 0
@@ -382,11 +418,14 @@ let next2Puyo: number[] = []
 let nextPuyo: number[] = []
 let score = 0
 let isRotatingRightMiddle = false
-let RightRotateIntervalTimer = 0
+let rightRotateIntervalTimer = 0
 let isRotatingLeftMiddle = false
 let leftRotateIntervalTimer = 0
+let leftMoveIntervalTimer = 0
 let state = 0
 let operatingPuyoFallTimer = 0
+let downMoveIntervalTimer = 0
+let rightMoveIntervalTimer = 0
 let operatingPuyo2PosY = 0
 let operatingPuyo2PosX = 0
 let operatingPuyoSprite2: Sprite = null
@@ -399,18 +438,24 @@ let FIELD_POS_Y = 0
 let FIELD_POS_X = 0
 let operatingPuyoPosY = 0
 let operatingPuyoPosX = 0
+let DOWN_MOVE_INTERVAL = 0
+let RIGHT_MOVE_INTERVAL = 0
+let LEFT_MOVE_INTERVAL = 0
 let RIGHT_ROTATE_INTERVAL = 0
 let LEFT_ROTATE_INTERVAL = 0
 let FIELD_CELLSIZE = 0
 let FIELD_HEIGHT = 0
 let FIELD_WIDTH = 0
 FIELD_WIDTH = 6
-FIELD_HEIGHT = 13
+FIELD_HEIGHT = 14
 FIELD_CELLSIZE = 6
 let OPERATING_PUYO_FALL_TIME = 2000
 let FPS = 60
-LEFT_ROTATE_INTERVAL = 50
-RIGHT_ROTATE_INTERVAL = 50
+LEFT_ROTATE_INTERVAL = 1000 / FPS * 3
+RIGHT_ROTATE_INTERVAL = 1000 / FPS * 3
+LEFT_MOVE_INTERVAL = 1000 / FPS * 2
+RIGHT_MOVE_INTERVAL = 1000 / FPS * 2
+DOWN_MOVE_INTERVAL = 0
 operatingPuyoPosX = 0
 operatingPuyoPosY = 0
 FIELD_POS_X = 80 - FIELD_WIDTH * FIELD_CELLSIZE / 2
@@ -442,7 +487,10 @@ game.onUpdateInterval(1000 / FPS, function () {
         }
         operatingPuyoFallTimer += 1000 / FPS
         leftRotateIntervalTimer += 1000 / FPS
-        RightRotateIntervalTimer += 1000 / FPS
+        rightRotateIntervalTimer += 1000 / FPS
+        rightMoveIntervalTimer += 1000 / FPS
+        leftMoveIntervalTimer += 1000 / FPS
+        downMoveIntervalTimer += 1000 / FPS
     } else if (state == 2) {
         PushNextPuyo()
     } else {
