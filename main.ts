@@ -33,6 +33,10 @@ function GetOperatingPuyoLeft () {
         return operatingPuyoPosX
     }
 }
+// DeleteCheckという関数名でオーバーロードしようとしたがエラーが出てしまったので関数名を変更した
+function DeleteCheck2 (index: number) {
+	
+}
 function Paint () {
     for (let 値 of sprites.allOfKind(SpriteKind.Puyo)) {
         値.destroy()
@@ -362,6 +366,9 @@ function GetOperatingPuyoBottom () {
         return operatingPuyoPosY
     }
 }
+function DeleteCheck () {
+	
+}
 function FallFieldPuyo (index: number) {
     if (0 <= index) {
         if (FallCheck(index)) {
@@ -382,7 +389,7 @@ function Initialize () {
     operatingPuyoDirection = 0
     operatingPuyo2PosX = 0
     operatingPuyo2PosY = -1
-    field = [FIELD_WIDTH, FIELD_HEIGHT]
+    field = [FIELD_WIDTH * FIELD_HEIGHT]
     for (let カウンター2 = 0; カウンター2 <= FIELD_WIDTH * FIELD_HEIGHT - 1; カウンター2++) {
         field[カウンター2] = 0
     }
