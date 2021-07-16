@@ -17,6 +17,20 @@ function GetOperatingPuyoTop () {
 function PosToFieldIndex (PosX: number, PosY: number) {
     return PosX + PosY * FIELD_WIDTH
 }
+function SetPuyoColorOnFrame (puyo: Sprite, color: number) {
+    if (color == 1) {
+        puyo.setImage(assets.image`Puyo_Red_On_Frame`)
+    }
+    if (color == 2) {
+        puyo.setImage(assets.image`Puyo_Blue_On_Frame`)
+    }
+    if (color == 3) {
+        puyo.setImage(assets.image`Puyo_Green_On_Frame`)
+    }
+    if (color == 4) {
+        puyo.setImage(assets.image`Puyo_Yellow_On_Frame`)
+    }
+}
 function SetPuyoColor (puyo: Sprite, color: number) {
     if (color == 1) {
         puyo.setImage(assets.image`Puyo_Red`)
@@ -172,7 +186,7 @@ function Paint () {
         `, SpriteKind.Puyo)
     mySprite.setKind(SpriteKind.Puyo)
     SetPuyoColor(mySprite, next2PuyoArray[0])
-    mySprite.setPosition(NEXT_PUYO_POS_X + FIELD_CELLSIZE, NEXT_PUYO_POS_Y)
+    mySprite.setPosition(NEXT2_PUYO_POS_X, NEXT2_PUYO_POS_Y)
     mySprite = sprites.create(img`
         . . . . . . . . . . . . . . . . 
         . . . . . . . . . . . . . . . . 
@@ -193,7 +207,7 @@ function Paint () {
         `, SpriteKind.Puyo)
     mySprite.setKind(SpriteKind.Puyo)
     SetPuyoColor(mySprite, next2PuyoArray[1])
-    mySprite.setPosition(NEXT_PUYO_POS_X + FIELD_CELLSIZE, NEXT_PUYO_POS_Y + FIELD_CELLSIZE)
+    mySprite.setPosition(NEXT2_PUYO_POS_X, NEXT2_PUYO_POS_Y + FIELD_CELLSIZE)
     if (state == 1) {
         operatingPuyoSprite1 = sprites.create(img`
             . . . . . . . . . . . . . . . . 
@@ -213,7 +227,7 @@ function Paint () {
             . . . . . . . . . . . . . . . . 
             . . . . . . . . . . . . . . . . 
             `, SpriteKind.Puyo)
-        SetPuyoColor(operatingPuyoSprite1, operatingPuyoArray[0])
+        SetPuyoColorOnFrame(operatingPuyoSprite1, operatingPuyoArray[0])
         operatingPuyoSprite1.setPosition(FIELD_POS_X + operatingPuyoPosX * FIELD_CELLSIZE + FIELD_CELLSIZE / 2, FIELD_POS_Y + (operatingPuyoPosY - 2) * FIELD_CELLSIZE + FIELD_CELLSIZE / 2)
         operatingPuyoSprite2 = sprites.create(img`
             . . . . . . . . . . . . . . . . 
@@ -233,7 +247,7 @@ function Paint () {
             . . . . . . . . . . . . . . . . 
             . . . . . . . . . . . . . . . . 
             `, SpriteKind.Puyo)
-        SetPuyoColor(operatingPuyoSprite2, operatingPuyoArray[1])
+        SetPuyoColorOnFrame(operatingPuyoSprite2, operatingPuyoArray[1])
         operatingPuyoSprite2.setPosition(FIELD_POS_X + (operatingPuyoPosX + operatingPuyo2PosX) * FIELD_CELLSIZE + FIELD_CELLSIZE / 2, FIELD_POS_Y + (operatingPuyoPosY + operatingPuyo2PosY - 2) * FIELD_CELLSIZE + FIELD_CELLSIZE / 2)
         if (operatingPuyoPosY <= 1) {
             operatingPuyoSprite1.setImage(img`
@@ -658,6 +672,8 @@ let RIGHT_MOVE_INTERVAL = 0
 let LEFT_MOVE_INTERVAL = 0
 let RIGHT_ROTATE_INTERVAL = 0
 let LEFT_ROTATE_INTERVAL = 0
+let NEXT2_PUYO_POS_Y = 0
+let NEXT2_PUYO_POS_X = 0
 let NEXT_PUYO_POS_Y = 0
 let NEXT_PUYO_POS_X = 0
 let FIELD_CELLSIZE = 0
@@ -667,10 +683,12 @@ FIELD_WIDTH = 6
 FIELD_HEIGHT = 14
 FIELD_CELLSIZE = 6
 let START_TIME = 1000
-let OPERATING_PUYO_FALL_TIME = 2000
+let OPERATING_PUYO_FALL_TIME = 1000
 let FPS = 60
 NEXT_PUYO_POS_X = 103
 NEXT_PUYO_POS_Y = 21
+NEXT2_PUYO_POS_X = 110
+NEXT2_PUYO_POS_Y = 21
 LEFT_ROTATE_INTERVAL = 1000 / FPS * 3
 RIGHT_ROTATE_INTERVAL = 1000 / FPS * 3
 LEFT_MOVE_INTERVAL = 1000 / FPS * 2
