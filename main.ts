@@ -56,12 +56,7 @@ function GetOperatingPuyoLeft () {
 }
 // DeleteCheckという関数名でオーバーロードしようとしたがエラーが出てしまったので関数名を変更した
 function DeleteCheck2 (index: number) {
-    if (fieldArray.length <= index) {
-        game.showLongText(convertToText(index), DialogLayout.Bottom)
-    }
-    if (index < 0) {
-        game.showLongText(convertToText(index), DialogLayout.Bottom)
-    }
+    isDeleteCheckingArray[index] = 1
     if (fieldArray[index] == 0) {
         spaceCountOnDeleteCheck += 1
         return
@@ -82,10 +77,6 @@ function DeleteCheck2 (index: number) {
     if (0 <= index % FIELD_WIDTH - 1 && fieldArray[index] == fieldArray[index - 1] && deleteCheckProgressArray[index - 1] != 1) {
         connectedCount += 1
         DeleteCheck2(index - 1)
-    }
-    if (4 <= connectedCount) {
-        isDeleteArray[index] = 1
-        isDelete = true
     }
     return
 }
@@ -516,8 +507,19 @@ function DeleteCheck () {
     spaceCountOnDeleteCheck = 0
     connectedCount = 0
     for (let カウンター = 0; カウンター <= FIELD_WIDTH * FIELD_HEIGHT - 1 - 1; カウンター++) {
+        for (let カウンター = 0; カウンター <= FIELD_WIDTH * FIELD_HEIGHT - 1; カウンター++) {
+            isDeleteCheckingArray[カウンター] = 0
+        }
         connectedCount = 1
         DeleteCheck2(FIELD_WIDTH * FIELD_HEIGHT - 1 - カウンター)
+        if (4 <= connectedCount) {
+            isDelete = true
+            for (let カウンター = 0; カウンター <= isDeleteCheckingArray.length - 1; カウンター++) {
+                if (isDeleteCheckingArray[カウンター] == 1) {
+                    isDeleteArray[カウンター] = 1
+                }
+            }
+        }
         if (spaceCountOnDeleteCheck == FIELD_WIDTH) {
             break;
         }
@@ -554,6 +556,10 @@ function Initialize () {
     isDeleteArray = [FIELD_WIDTH * FIELD_HEIGHT]
     for (let カウンター = 0; カウンター <= FIELD_WIDTH * FIELD_HEIGHT - 1; カウンター++) {
         isDeleteArray[カウンター] = 0
+    }
+    isDeleteCheckingArray = [FIELD_WIDTH * FIELD_HEIGHT]
+    for (let カウンター = 0; カウンター <= FIELD_WIDTH * FIELD_HEIGHT - 1; カウンター++) {
+        isDeleteCheckingArray[カウンター] = 0
     }
     deleteCheckProgressArray = [FIELD_WIDTH * FIELD_HEIGHT]
     for (let カウンター = 0; カウンター <= FIELD_WIDTH * FIELD_HEIGHT - 1; カウンター++) {
@@ -635,6 +641,7 @@ let state = 0
 let next2PuyoArray: number[] = []
 let nextPuyoArray: number[] = []
 let mySprite: Sprite = null
+let isDeleteCheckingArray: number[] = []
 let connectedCount = 0
 let spaceCountOnDeleteCheck = 0
 let isDelete = false
@@ -736,13 +743,7 @@ game.onUpdateInterval(1000 / FPS, function () {
         fallStartPuyoTimer += FPS
         if (FALL_START_PUYO_TIME < fallStartPuyoTimer) {
             FallFieldPuyoAll()
-            DeleteCheck()
-            if (isDelete) {
-                state = 3
-            } else {
-                state = 1
-                PushNextPuyo()
-            }
+            state = 2
             fallStartPuyoTimer = 0
         }
     }
