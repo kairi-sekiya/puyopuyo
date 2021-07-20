@@ -539,6 +539,12 @@ function DeleteCheck () {
         }
     }
 }
+function DefeatCheck () {
+    if (fieldArray[FIELD_WIDTH * 2 + 2]) {
+        return true
+    }
+    return false
+}
 function FallFieldPuyo (index: number) {
     if (0 <= index) {
         if (FallCheck(index)) {
@@ -745,8 +751,12 @@ game.onUpdateInterval(1000 / FPS, function () {
             if (isDelete) {
                 state = 3
             } else {
-                state = 1
-                PushNextPuyo()
+                if (DefeatCheck()) {
+                    state = 5
+                } else {
+                    state = 1
+                    PushNextPuyo()
+                }
             }
             putPuyoTimer = 0
         }
@@ -757,13 +767,15 @@ game.onUpdateInterval(1000 / FPS, function () {
             state = 4
             deletePuyoTimer = 0
         }
-    } else {
+    } else if (state == 4) {
         fallStartPuyoTimer += FPS
         if (FALL_START_PUYO_TIME < fallStartPuyoTimer) {
             FallFieldPuyoAll()
             state = 2
             fallStartPuyoTimer = 0
         }
+    } else {
+        game.showLongText("YOU DEAD", DialogLayout.Bottom)
     }
     Paint()
 })
