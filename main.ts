@@ -209,86 +209,6 @@ function Paint () {
     SetPuyoColor(mySprite, next2PuyoArray[0])
     mySprite.setPosition(NEXT2_PUYO_POS_X, NEXT2_PUYO_POS_Y + FIELD_CELLSIZE)
     if (state == 1) {
-        operatingPuyoSprite1 = sprites.create(img`
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            `, SpriteKind.Puyo)
-        SetPuyoColorOnFrame(operatingPuyoSprite1, operatingPuyoArray[0])
-        operatingPuyoSprite1.setPosition(FIELD_POS_X + operatingPuyoPosX * FIELD_CELLSIZE + FIELD_CELLSIZE / 2, FIELD_POS_Y + (operatingPuyoPosY - 2) * FIELD_CELLSIZE + FIELD_CELLSIZE / 2)
-        operatingPuyoSprite2 = sprites.create(img`
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            `, SpriteKind.Puyo)
-        SetPuyoColorOnFrame(operatingPuyoSprite2, operatingPuyoArray[1])
-        operatingPuyoSprite2.setPosition(FIELD_POS_X + (operatingPuyoPosX + operatingPuyo2PosX) * FIELD_CELLSIZE + FIELD_CELLSIZE / 2, FIELD_POS_Y + (operatingPuyoPosY + operatingPuyo2PosY - 2) * FIELD_CELLSIZE + FIELD_CELLSIZE / 2)
-        if (operatingPuyoPosY <= 1) {
-            operatingPuyoSprite1.setImage(img`
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                `)
-        }
-        if (operatingPuyoPosY + operatingPuyo2PosY <= 1) {
-            operatingPuyoSprite2.setImage(img`
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                `)
-        }
         predictionSprite1 = sprites.create(img`
             . . . . . . . . . . . . . . . . 
             . . . . . . . . . . . . . . . . 
@@ -379,6 +299,86 @@ function Paint () {
         }
         if (predictionSprite2.y < FIELD_POS_Y + 1 * FIELD_CELLSIZE + FIELD_CELLSIZE / 2) {
             predictionSprite2.setImage(img`
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                `)
+        }
+        operatingPuyoSprite1 = sprites.create(img`
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            `, SpriteKind.Puyo)
+        SetPuyoColorOnFrame(operatingPuyoSprite1, operatingPuyoArray[0])
+        operatingPuyoSprite1.setPosition(FIELD_POS_X + operatingPuyoPosX * FIELD_CELLSIZE + FIELD_CELLSIZE / 2, FIELD_POS_Y + (operatingPuyoPosY - 2) * FIELD_CELLSIZE + FIELD_CELLSIZE / 2)
+        operatingPuyoSprite2 = sprites.create(img`
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            `, SpriteKind.Puyo)
+        SetPuyoColorOnFrame(operatingPuyoSprite2, operatingPuyoArray[1])
+        operatingPuyoSprite2.setPosition(FIELD_POS_X + (operatingPuyoPosX + operatingPuyo2PosX) * FIELD_CELLSIZE + FIELD_CELLSIZE / 2, FIELD_POS_Y + (operatingPuyoPosY + operatingPuyo2PosY - 2) * FIELD_CELLSIZE + FIELD_CELLSIZE / 2)
+        if (operatingPuyoPosY <= 1) {
+            operatingPuyoSprite1.setImage(img`
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                `)
+        }
+        if (operatingPuyoPosY + operatingPuyo2PosY <= 1) {
+            operatingPuyoSprite2.setImage(img`
                 . . . . . . . . . . . . . . . . 
                 . . . . . . . . . . . . . . . . 
                 . . . . . . . . . . . . . . . . 
@@ -774,13 +774,13 @@ let leftMoveIntervalTimer = 0
 let operatingPuyoFallTimer = 0
 let downMoveIntervalTimer = 0
 let rightMoveIntervalTimer = 0
-let predictionSprite2: Sprite = null
-let predictionSprite1: Sprite = null
-let operatingPuyo2PosY = 0
-let operatingPuyo2PosX = 0
 let operatingPuyoSprite2: Sprite = null
-let operatingPuyoArray: number[] = []
 let operatingPuyoSprite1: Sprite = null
+let operatingPuyo2PosX = 0
+let operatingPuyo2PosY = 0
+let predictionSprite2: Sprite = null
+let operatingPuyoArray: number[] = []
+let predictionSprite1: Sprite = null
 let state = 0
 let next2PuyoArray: number[] = []
 let nextPuyoArray: number[] = []
