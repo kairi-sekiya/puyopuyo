@@ -119,6 +119,17 @@ function DeletePuyo () {
     isDelete = false
     spaceCountOnDeleteCheck = 0
     connectedCount = 0
+    chainCount += 1
+    for (let カウンター = 0; カウンター <= 3; カウンター++) {
+        if (deleteColorArray[カウンター] == 1) {
+            deleteColorCount += 1
+        }
+    }
+    if (chainCount == 0 && maxConnectedCount == 0 && deleteColorCount == 0) {
+        info.changeScoreBy(1 * (10 * deleteCount))
+    } else {
+        info.changeScoreBy((CHAIN_FACTOR_ARRAY[chainCount - 1] + CONNECTED_COUNT_FACTOR_ARRAY[maxConnectedCount - 1] + DELETE_COLOR_COUNT_FACTOR_ARRAY[deleteColorCount - 1]) * (10 * deleteCount))
+    }
 }
 function GetOperatingPuyoLeft () {
     if (operatingPuyoDirection == 3) {
@@ -133,6 +144,8 @@ function DeleteCheck2 (index: number) {
     if (fieldArray[index] == 0) {
         spaceCountOnDeleteCheck += 1
         return
+    } else {
+        spaceCountOnDeleteCheck = 0
     }
     deleteCheckProgressArray[index] = 1
     if (0 <= index - FIELD_WIDTH && fieldArray[index] == fieldArray[index - FIELD_WIDTH] && deleteCheckProgressArray[index - FIELD_WIDTH] != 1) {
@@ -698,9 +711,14 @@ function DeleteCheck () {
     for (let カウンター = 0; カウンター <= FIELD_WIDTH * FIELD_HEIGHT - 1; カウンター++) {
         deleteCheckProgressArray[カウンター] = 0
     }
+    for (let カウンター = 0; カウンター <= 3; カウンター++) {
+        deleteColorArray[カウンター] = 0
+    }
     isDelete = false
     spaceCountOnDeleteCheck = 0
     connectedCount = 0
+    maxConnectedCount = 0
+    deleteCount = 0
     for (let カウンター = 0; カウンター <= FIELD_WIDTH * FIELD_HEIGHT - 1 - 1; カウンター++) {
         for (let カウンター = 0; カウンター <= FIELD_WIDTH * FIELD_HEIGHT - 1; カウンター++) {
             isDeleteCheckingArray[カウンター] = 0
@@ -712,7 +730,12 @@ function DeleteCheck () {
             for (let カウンター = 0; カウンター <= isDeleteCheckingArray.length - 1; カウンター++) {
                 if (isDeleteCheckingArray[カウンター] == 1) {
                     isDeleteArray[カウンター] = 1
+                    deleteCount += 1
+                    deleteColorArray[fieldArray[FIELD_WIDTH * FIELD_HEIGHT - 1 - カウンター] - 1] = 1
                 }
+            }
+            if (maxConnectedCount < connectedCount) {
+                maxConnectedCount = connectedCount
             }
         }
         if (spaceCountOnDeleteCheck == FIELD_WIDTH) {
@@ -740,7 +763,7 @@ function FallFieldPuyo (index: number) {
     }
 }
 function Initialize () {
-    score = 0
+    info.setScore(0)
     state = 0
     operatingPuyoFallTimer = 0
     putPuyoTimer = 0
@@ -778,6 +801,10 @@ function Initialize () {
     next2PuyoArray = [2]
     for (let カウンター = 0; カウンター <= 1; カウンター++) {
         next2PuyoArray[カウンター] = randint(1, 4)
+    }
+    deleteColorArray = [5]
+    for (let カウンター = 0; カウンター <= 3; カウンター++) {
+        deleteColorArray[カウンター] = 0
     }
     scene.setBackgroundColor(3)
     fieldFrameImage = image.create(FIELD_WIDTH * FIELD_CELLSIZE + 2, (FIELD_HEIGHT - 2) * FIELD_CELLSIZE + 2)
@@ -824,7 +851,6 @@ let startTimer = 0
 let fallStartPuyoTimer = 0
 let deletePuyoTimer = 0
 let putPuyoTimer = 0
-let score = 0
 let isRotatingRightMiddle = false
 let rightRotateIntervalTimer = 0
 let isRotatingLeftMiddle = false
@@ -845,6 +871,11 @@ let next2PuyoArray: number[] = []
 let nextPuyoArray: number[] = []
 let mySprite: Sprite = null
 let isDeleteCheckingArray: number[] = []
+let deleteCount = 0
+let maxConnectedCount = 0
+let deleteColorCount = 0
+let deleteColorArray: number[] = []
+let chainCount = 0
 let connectedCount = 0
 let spaceCountOnDeleteCheck = 0
 let isDelete = false
@@ -926,6 +957,7 @@ game.onUpdateInterval(1000 / FPS, function () {
                     state = 5
                 } else {
                     state = 1
+                    chainCount = 0
                     PushNextPuyo()
                 }
             }
