@@ -120,15 +120,21 @@ function DeletePuyo () {
     spaceCountOnDeleteCheck = 0
     connectedCount = 0
     chainCount += 1
+    deleteColorCount += 1
     for (let カウンター = 0; カウンター <= 3; カウンター++) {
         if (deleteColorArray[カウンター] == 1) {
             deleteColorCount += 1
         }
     }
-    if (chainCount == 0 && maxConnectedCount == 0 && deleteColorCount == 0) {
-        info.changeScoreBy(1 * (10 * deleteCount))
+    if (chainCount == 0 && maxConnectedCount == 4 && deleteColorCount == 1) {
+        score += 1 * (10 * deleteCount)
     } else {
-        info.changeScoreBy((CHAIN_FACTOR_ARRAY[chainCount - 1] + CONNECTED_COUNT_FACTOR_ARRAY[maxConnectedCount - 1] + DELETE_COLOR_COUNT_FACTOR_ARRAY[deleteColorCount - 1]) * (10 * deleteCount))
+        if (11 <= maxConnectedCount) {
+            score += (CHAIN_FACTOR_ARRAY[chainCount - 1] + CONNECTED_COUNT_FACTOR_ARRAY[7] + DELETE_COLOR_COUNT_FACTOR_ARRAY[deleteColorCount - 1]) * (10 * deleteCount)
+        } else {
+            score += (CHAIN_FACTOR_ARRAY[chainCount - 1] + CONNECTED_COUNT_FACTOR_ARRAY[maxConnectedCount - 4] + DELETE_COLOR_COUNT_FACTOR_ARRAY[deleteColorCount - 1]) * (10 * deleteCount)
+        }
+        info.setScore(score)
     }
 }
 function GetOperatingPuyoLeft () {
@@ -764,6 +770,7 @@ function FallFieldPuyo (index: number) {
 }
 function Initialize () {
     info.setScore(0)
+    score = 0
     state = 0
     operatingPuyoFallTimer = 0
     putPuyoTimer = 0
@@ -872,9 +879,10 @@ let nextPuyoArray: number[] = []
 let mySprite: Sprite = null
 let isDeleteCheckingArray: number[] = []
 let deleteCount = 0
+let score = 0
 let maxConnectedCount = 0
-let deleteColorCount = 0
 let deleteColorArray: number[] = []
+let deleteColorCount = 0
 let chainCount = 0
 let connectedCount = 0
 let spaceCountOnDeleteCheck = 0
@@ -934,6 +942,9 @@ game.onUpdateInterval(1000 / FPS, function () {
         }
         if (!(controller.right.isPressed() || controller.left.isPressed())) {
             if (controller.down.isPressed()) {
+                if (DOWN_MOVE_INTERVAL < downMoveIntervalTimer) {
+                	
+                }
                 MovePuyo(2)
             }
         }
