@@ -289,6 +289,128 @@ function Paint () {
                 . . . . . . . . . . . . . . . . 
                 `)
         }
+        predictionSprite1 = sprites.create(img`
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            `, SpriteKind.Puyo)
+        SetPuyoColorPrediction(predictionSprite1, operatingPuyoArray[0])
+        predictionSprite2 = sprites.create(img`
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            `, SpriteKind.Puyo)
+        SetPuyoColorPrediction(predictionSprite2, operatingPuyoArray[1])
+        if (operatingPuyoDirection == 2) {
+            for (let カウンター = 0; カウンター <= FIELD_HEIGHT; カウンター++) {
+                if (!(FallCheck(PosToFieldIndex(operatingPuyoPosX, operatingPuyoPosY + operatingPuyo2PosY + カウンター)))) {
+                    predictionSprite2.setPosition(FIELD_POS_X + operatingPuyoPosX * FIELD_CELLSIZE + FIELD_CELLSIZE / 2, FIELD_POS_Y + (operatingPuyoPosY + operatingPuyo2PosY - 2 + カウンター) * FIELD_CELLSIZE + FIELD_CELLSIZE / 2)
+                    predictionSprite1.setPosition(FIELD_POS_X + operatingPuyoPosX * FIELD_CELLSIZE + FIELD_CELLSIZE / 2, FIELD_POS_Y + (operatingPuyoPosY - 2 + カウンター) * FIELD_CELLSIZE + FIELD_CELLSIZE / 2)
+                    break;
+                }
+            }
+        } else if (operatingPuyoDirection == 0) {
+            for (let カウンター = 0; カウンター <= FIELD_HEIGHT; カウンター++) {
+                if (!(FallCheck(PosToFieldIndex(operatingPuyoPosX, operatingPuyoPosY + カウンター)))) {
+                    predictionSprite1.setPosition(FIELD_POS_X + operatingPuyoPosX * FIELD_CELLSIZE + FIELD_CELLSIZE / 2, FIELD_POS_Y + (operatingPuyoPosY - 2 + カウンター) * FIELD_CELLSIZE + FIELD_CELLSIZE / 2)
+                    predictionSprite2.setPosition(FIELD_POS_X + operatingPuyoPosX * FIELD_CELLSIZE + FIELD_CELLSIZE / 2, FIELD_POS_Y + (operatingPuyoPosY + operatingPuyo2PosY - 2 + カウンター) * FIELD_CELLSIZE + FIELD_CELLSIZE / 2)
+                    break;
+                }
+            }
+        } else {
+            for (let カウンター = 0; カウンター <= FIELD_HEIGHT; カウンター++) {
+                if (!(FallCheck(PosToFieldIndex(operatingPuyoPosX, operatingPuyoPosY + カウンター)))) {
+                    predictionSprite1.setPosition(FIELD_POS_X + operatingPuyoPosX * FIELD_CELLSIZE + FIELD_CELLSIZE / 2, FIELD_POS_Y + (operatingPuyoPosY - 2 + カウンター) * FIELD_CELLSIZE + FIELD_CELLSIZE / 2)
+                    break;
+                }
+            }
+            for (let カウンター = 0; カウンター <= FIELD_HEIGHT; カウンター++) {
+                if (!(FallCheck(PosToFieldIndex(operatingPuyoPosX + operatingPuyo2PosX, operatingPuyoPosY + カウンター)))) {
+                    predictionSprite2.setPosition(FIELD_POS_X + (operatingPuyoPosX + operatingPuyo2PosX) * FIELD_CELLSIZE + FIELD_CELLSIZE / 2, FIELD_POS_Y + (operatingPuyoPosY - 2 + カウンター) * FIELD_CELLSIZE + FIELD_CELLSIZE / 2)
+                    break;
+                }
+            }
+        }
+        if (predictionSprite1.y < FIELD_POS_Y + 1 * FIELD_CELLSIZE + FIELD_CELLSIZE / 2) {
+            predictionSprite1.setImage(img`
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                `)
+        }
+        if (predictionSprite2.y < FIELD_POS_Y + 1 * FIELD_CELLSIZE + FIELD_CELLSIZE / 2) {
+            predictionSprite2.setImage(img`
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                `)
+        }
+    }
+}
+function SetPuyoColorPrediction (puyo: Sprite, color: number) {
+    if (color == 1) {
+        puyo.setImage(assets.image`Puyo_Red_Prediction`)
+    }
+    if (color == 2) {
+        puyo.setImage(assets.image`Puyo_Blue_Prediction`)
+    }
+    if (color == 3) {
+        puyo.setImage(assets.image`Puyo_Green_Prediction`)
+    }
+    if (color == 4) {
+        puyo.setImage(assets.image`Puyo_Yellow_Prediction`)
     }
 }
 // 0:上
@@ -322,7 +444,6 @@ function MovePuyo (direction: number) {
                         FallFieldPuyo(PosToFieldIndex(operatingPuyoPosX, operatingPuyoPosY))
                         FallFieldPuyo(PosToFieldIndex(operatingPuyoPosX + operatingPuyo2PosX, operatingPuyoPosY + operatingPuyo2PosY))
                     }
-                    state = 2
                 } else {
                     if (operatingPuyoDirection == 2) {
                         if (1 == operatingPuyoPosY + operatingPuyo2PosY) {
@@ -345,6 +466,7 @@ function MovePuyo (direction: number) {
                         fieldArray[PosToFieldIndex(カウンター, 0)] = 0
                     }
                 }
+                state = 2
             }
         }
     }
@@ -631,7 +753,7 @@ function FallCheck (index: number) {
     if (Math.floor(index / FIELD_WIDTH) + 1 >= FIELD_HEIGHT) {
         return false
     }
-    if (fieldArray[index + FIELD_WIDTH] == 0 || Math.floor(index / FIELD_WIDTH) + 1 > FIELD_HEIGHT) {
+    if (fieldArray[index + FIELD_WIDTH] == 0) {
         return true
     } else {
         return false
@@ -652,6 +774,8 @@ let leftMoveIntervalTimer = 0
 let operatingPuyoFallTimer = 0
 let downMoveIntervalTimer = 0
 let rightMoveIntervalTimer = 0
+let predictionSprite2: Sprite = null
+let predictionSprite1: Sprite = null
 let operatingPuyo2PosY = 0
 let operatingPuyo2PosX = 0
 let operatingPuyoSprite2: Sprite = null
